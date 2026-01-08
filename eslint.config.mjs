@@ -13,6 +13,22 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // Brand checking rule - prevent "esimfly" mentions
+  {
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "Literal[value=/esimfly/i]",
+          message: "Use 'ROAMR' instead of 'esimfly'"
+        },
+        {
+          selector: "TemplateElement[value.raw=/esimfly/i]",
+          message: "Use 'ROAMR' instead of 'esimfly'"
+        }
+      ]
+    }
+  }
 ]);
 
 export default eslintConfig;
