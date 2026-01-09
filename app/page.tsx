@@ -199,201 +199,163 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left Column - Text */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              {/* Live Badge */}
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--border)] mb-8">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent-lime)] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent-lime)]"></span>
-                </span>
-                <span className="text-sm text-[var(--text-secondary)]">
-                  <AnimatedNumber value={190} suffix="+" /> countries online
-                </span>
-              </div>
+        <div className="max-w-5xl mx-auto relative z-10 text-center">
+          {/* Centered Hero Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Live Badge */}
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--border)] mb-8">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent-lime)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent-lime)]"></span>
+              </span>
+              <span className="text-sm text-[var(--text-secondary)]">
+                <AnimatedNumber value={190} suffix="+" /> countries online
+              </span>
+            </div>
 
-              {/* Headline */}
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1]">
-                <span className="text-white block">Global Data.</span>
-                <span className="text-gradient block">Zero Friction.</span>
-              </h1>
+            {/* Headline */}
+            <h1 className="text-5xl md:text-6xl lg:text-8xl font-bold mb-6 leading-[1.05]">
+              <span className="text-white">Global Data.</span>
+              <br />
+              <span className="text-gradient">Zero Friction.</span>
+            </h1>
 
-              <p className="text-xl text-[var(--text-secondary)] mb-8 max-w-lg">
-                Instant eSIM activation for travelers. Connect to local networks worldwide without swapping cards or dealing with roaming fees.
-              </p>
+            <p className="text-xl md:text-2xl text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto">
+              Instant eSIM activation for travelers. Connect to local networks worldwide without swapping cards or dealing with roaming fees.
+            </p>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Link
-                  href="/destinations"
-                  className="group relative inline-flex items-center justify-center"
-                >
-                  <div className="absolute -inset-1 bg-gradient-to-r from-[var(--primary)] via-[var(--accent-purple)] to-[var(--accent-lime)] rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-500" />
-                  <div className="relative px-8 py-4 bg-[var(--primary)] rounded-xl text-lg font-semibold text-white flex items-center gap-2">
-                    Get Your eSIM
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-                <Link
-                  href="/destinations"
-                  className="px-8 py-4 rounded-xl text-lg font-medium text-[var(--text-secondary)] border border-[var(--border)] hover:border-[var(--primary)] hover:text-white transition-all flex items-center gap-2"
-                >
-                  <Globe className="w-5 h-5" />
-                  View Coverage
-                </Link>
-              </div>
-
-              {/* Social Proof */}
-              <div className="flex flex-wrap items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <div
-                        key={i}
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent-purple)] border-2 border-[var(--bg)] flex items-center justify-center text-xs font-bold text-white"
-                      >
-                        {String.fromCharCode(64 + i)}
-                      </div>
-                    ))}
-                  </div>
-                  <span className="text-sm text-[var(--text-muted)]">100K+ travelers</span>
+            {/* CTA Buttons - Centered */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Link
+                href="/destinations"
+                className="group relative inline-flex items-center justify-center"
+              >
+                <div className="absolute -inset-1 bg-gradient-to-r from-[var(--primary)] via-[var(--accent-purple)] to-[var(--accent-lime)] rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-500" />
+                <div className="relative px-8 py-4 bg-[var(--primary)] rounded-xl text-lg font-semibold text-white flex items-center gap-2">
+                  Get Your eSIM
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <div className="flex items-center gap-1">
+              </Link>
+              <Link
+                href="/destinations"
+                className="px-8 py-4 rounded-xl text-lg font-medium text-[var(--text-secondary)] border border-[var(--border)] hover:border-[var(--primary)] hover:text-white transition-all flex items-center justify-center gap-2"
+              >
+                <Globe className="w-5 h-5" />
+                View Coverage
+              </Link>
+            </div>
+
+            {/* Social Proof - Centered */}
+            <div className="flex flex-wrap items-center justify-center gap-8 mb-16">
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-2">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="w-4 h-4 text-[var(--accent-lime)] fill-[var(--accent-lime)]" />
-                  ))}
-                  <span className="text-sm text-[var(--text-muted)] ml-1">4.9/5</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right Column - Interactive Globe Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              {/* Main Card */}
-              <div className="relative bg-[var(--surface)]/80 backdrop-blur-xl rounded-3xl border border-[var(--border)] p-8 overflow-hidden">
-                {/* Glow Effect */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent" />
-
-                {/* Globe Animation */}
-                <div className="relative w-64 h-64 mx-auto mb-8">
-                  <motion.div
-                    className="absolute inset-0 rounded-full border-2 border-dashed border-[var(--border)]"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                  />
-                  <motion.div
-                    className="absolute inset-4 rounded-full border border-[var(--primary)]/30"
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                  />
-                  <div className="absolute inset-8 rounded-full bg-gradient-to-br from-[var(--primary)]/20 to-[var(--accent-purple)]/20 flex items-center justify-center">
-                    <Globe className="w-24 h-24 text-[var(--primary)]" />
-                  </div>
-
-                  {/* Orbiting Dots */}
-                  {[0, 1, 2, 3].map((i) => (
-                    <motion.div
+                    <div
                       key={i}
-                      className="absolute w-3 h-3 rounded-full bg-[var(--accent-lime)]"
-                      style={{
-                        top: '50%',
-                        left: '50%',
-                      }}
-                      animate={{
-                        x: [
-                          Math.cos((i * Math.PI) / 2) * 100,
-                          Math.cos((i * Math.PI) / 2 + Math.PI) * 100,
-                          Math.cos((i * Math.PI) / 2) * 100,
-                        ],
-                        y: [
-                          Math.sin((i * Math.PI) / 2) * 100,
-                          Math.sin((i * Math.PI) / 2 + Math.PI) * 100,
-                          Math.sin((i * Math.PI) / 2) * 100,
-                        ],
-                      }}
-                      transition={{
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                        delay: i * 0.5,
-                      }}
-                    />
-                  ))}
-                </div>
-
-                {/* Active Destination Showcase */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeDestination}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="text-center"
-                  >
-                    <div className="text-5xl mb-3">{popularDestinations[activeDestination].flag}</div>
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      {popularDestinations[activeDestination].name}
-                    </h3>
-                    <p className="text-[var(--text-muted)] text-sm mb-4">
-                      {popularDestinations[activeDestination].data} • 30 Days
-                    </p>
-                    <div className="text-3xl font-bold text-gradient">
-                      ${popularDestinations[activeDestination].price}
+                      className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent-purple)] border-2 border-[var(--bg)] flex items-center justify-center text-xs font-bold text-white"
+                    >
+                      {String.fromCharCode(64 + i)}
                     </div>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Destination Dots */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {popularDestinations.slice(0, 8).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveDestination(i)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        i === activeDestination
-                          ? 'bg-[var(--primary)] w-6'
-                          : 'bg-[var(--border)] hover:bg-[var(--text-muted)]'
-                      }`}
-                    />
                   ))}
                 </div>
+                <span className="text-sm text-[var(--text-muted)]">100K+ travelers</span>
               </div>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 text-[var(--accent-lime)] fill-[var(--accent-lime)]" />
+                ))}
+                <span className="text-sm text-[var(--text-muted)] ml-1">4.9/5</span>
+              </div>
+            </div>
+          </motion.div>
 
-              {/* Floating Elements */}
+          {/* Destination Carousel - Below Text */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="relative"
+          >
+            {/* Floating Feature Pills */}
+            <div className="flex justify-center gap-4 mb-8">
               <motion.div
-                className="absolute -top-4 -right-4 px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] backdrop-blur-sm"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
+                className="px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--border)] backdrop-blur-sm"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
               >
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4 text-[var(--accent-lime)]" />
                   <span className="text-sm font-medium text-white">Instant Setup</span>
                 </div>
               </motion.div>
-
               <motion.div
-                className="absolute -bottom-4 -left-4 px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] backdrop-blur-sm"
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity }}
+                className="px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--border)] backdrop-blur-sm"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, delay: 0.5 }}
               >
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-[var(--accent-blue)]" />
                   <span className="text-sm font-medium text-white">Secure</span>
                 </div>
               </motion.div>
-            </motion.div>
-          </div>
+              <motion.div
+                className="px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--border)] backdrop-blur-sm"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+              >
+                <div className="flex items-center gap-2">
+                  <Signal className="w-4 h-4 text-[var(--accent-purple)]" />
+                  <span className="text-sm font-medium text-white">5G Ready</span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Active Destination Card */}
+            <div className="relative max-w-md mx-auto bg-[var(--surface)]/80 backdrop-blur-xl rounded-3xl border border-[var(--border)] p-8 overflow-hidden">
+              {/* Glow Effect */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent" />
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeDestination}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  className="text-center"
+                >
+                  <div className="text-6xl mb-4">{popularDestinations[activeDestination].flag}</div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {popularDestinations[activeDestination].name}
+                  </h3>
+                  <p className="text-[var(--text-muted)] text-sm mb-4">
+                    {popularDestinations[activeDestination].data} • 30 Days • 4G/5G
+                  </p>
+                  <div className="text-4xl font-bold text-gradient">
+                    ${popularDestinations[activeDestination].price}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Destination Dots */}
+              <div className="flex justify-center gap-2 mt-6">
+                {popularDestinations.slice(0, 8).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveDestination(i)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      i === activeDestination
+                        ? 'bg-[var(--primary)] w-6'
+                        : 'bg-[var(--border)] hover:bg-[var(--text-muted)]'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* Scroll Indicator */}
