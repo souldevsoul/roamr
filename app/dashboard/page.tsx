@@ -20,8 +20,16 @@ import {
   Check,
   Plane,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Wallet,
+  Plus,
+  ArrowUpRight,
+  ArrowDownLeft,
+  FileText,
+  Gift,
+  Loader2
 } from 'lucide-react'
+import { WalletDrawer } from '@/components/wallet'
 
 interface ESim {
   id: string
@@ -36,6 +44,8 @@ interface ESim {
   countryName: string
   planName: string
   createdAt: string
+  isGifted?: boolean
+  giftedToEmail?: string | null
 }
 
 interface Order {
@@ -47,6 +57,16 @@ interface Order {
   planName: string
   createdAt: string
   esim: ESim | null
+}
+
+interface WalletTransaction {
+  id: string
+  type: 'TOPUP' | 'PURCHASE' | 'REFUND' | 'ADJUSTMENT'
+  amount: number
+  balance: number
+  description: string
+  status: string
+  createdAt: string
 }
 
 // Country stamp component
@@ -83,6 +103,16 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [selectedEsim, setSelectedEsim] = useState<ESim | null>(null)
   const [copied, setCopied] = useState(false)
+  const [walletBalance, setWalletBalance] = useState(0)
+  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([])
+  const [walletOpen, setWalletOpen] = useState(false)
+
+  // Gift state
+  const [giftEsim, setGiftEsim] = useState<ESim | null>(null)
+  const [giftForm, setGiftForm] = useState({ email: '', name: '', message: '' })
+  const [giftLoading, setGiftLoading] = useState(false)
+  const [giftSuccess, setGiftSuccess] = useState(false)
+  const [giftError, setGiftError] = useState('')
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -91,11 +121,21 @@ export default function DashboardPage() {
   }, [status, router])
 
   useEffect(() => {
-    async function fetchOrders() {
+    async function fetchData() {
       try {
-        const res = await fetch('/api/orders')
-        const data = await res.json()
-        setOrders(Array.isArray(data) ? data : [])
+        const [ordersRes, walletRes] = await Promise.all([
+          fetch('/api/orders'),
+          fetch('/api/wallet')
+        ])
+
+        const ordersData = await ordersRes.json()
+        setOrders(Array.isArray(ordersData) ? ordersData : [])
+
+        if (walletRes.ok) {
+          const walletData = await walletRes.json()
+          setWalletBalance(walletData.balance || 0)
+          setWalletTransactions(walletData.transactions || [])
+        }
       } catch {
         // Handle error silently
       } finally {
@@ -104,7 +144,7 @@ export default function DashboardPage() {
     }
 
     if (session) {
-      fetchOrders()
+      fetchData()
     }
   }, [session])
 
@@ -112,6 +152,44 @@ export default function DashboardPage() {
     await navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleGiftSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!giftEsim) return
+
+    setGiftLoading(true)
+    setGiftError('')
+
+    try {
+      const res = await fetch(`/api/esim/${giftEsim.id}/gift`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientEmail: giftForm.email,
+          recipientName: giftForm.name,
+          message: giftForm.message,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to send gift')
+      }
+
+      setGiftSuccess(true)
+      setTimeout(() => {
+        setGiftEsim(null)
+        setGiftForm({ email: '', name: '', message: '' })
+        setGiftSuccess(false)
+        window.location.reload()
+      }, 2000)
+    } catch (err) {
+      setGiftError(err instanceof Error ? err.message : 'Failed to send gift')
+    } finally {
+      setGiftLoading(false)
+    }
   }
 
   const activeEsims = orders.filter(o => o.esim && o.esim.status !== 'EXPIRED')
@@ -292,6 +370,29 @@ export default function DashboardPage() {
                   <div className="text-xs text-[#D4AF37]/60 uppercase tracking-wider">eSIMs</div>
                 </div>
               </div>
+
+              {/* Travel Fund Pocket */}
+              <div className="mt-6 pt-6 border-t border-[#D4AF37]/20">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Wallet className="w-4 h-4 text-[#D4AF37]/60" />
+                    <span className="text-[10px] uppercase tracking-wider text-[#D4AF37]/60">Travel Fund</span>
+                  </div>
+                  <button
+                    onClick={() => setWalletOpen(true)}
+                    className="text-xs text-[#D4AF37] hover:text-[#D4AF37]/80 flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Add
+                  </button>
+                </div>
+                <div className="text-center py-4 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20">
+                  <div className="text-3xl font-bold text-[#D4AF37]">
+                    ${(walletBalance / 100).toFixed(2)}
+                  </div>
+                  <div className="text-xs text-[#D4AF37]/60 mt-1">Available Balance</div>
+                </div>
+              </div>
             </div>
 
             {/* Quick Actions */}
@@ -320,6 +421,102 @@ export default function DashboardPage() {
             transition={{ delay: 0.2 }}
             className="lg:col-span-2"
           >
+            {/* Travel Fund Card - Unique horizontal layout */}
+            <div className="card mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-white flex items-center gap-2">
+                  <Wallet className="w-5 h-5 text-[#D4AF37]" />
+                  Travel Fund Activity
+                </h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                      const res = await fetch('/api/wallet/statement')
+                      if (res.ok) {
+                        const blob = await res.blob()
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = `wallet-statement-${new Date().toISOString().split('T')[0]}.pdf`
+                        a.click()
+                      }
+                    }}
+                    className="text-xs text-[var(--text-muted)] hover:text-white flex items-center gap-1"
+                  >
+                    <FileText className="w-3 h-3" />
+                    Statement
+                  </button>
+                  <button
+                    onClick={() => setWalletOpen(true)}
+                    className="btn-primary text-sm py-1.5 px-3 flex items-center gap-1"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Top Up
+                  </button>
+                </div>
+              </div>
+
+              {walletTransactions.length === 0 ? (
+                <div className="text-center py-6">
+                  <div className="w-12 h-12 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-3">
+                    <Wallet className="w-6 h-6 text-[#D4AF37]/40" />
+                  </div>
+                  <p className="text-[var(--text-muted)] text-sm mb-3">
+                    Add funds to pay for eSIMs instantly
+                  </p>
+                  <button
+                    onClick={() => setWalletOpen(true)}
+                    className="text-[#D4AF37] text-sm font-medium hover:underline"
+                  >
+                    Add your first funds →
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {walletTransactions.slice(0, 5).map((tx) => (
+                    <div
+                      key={tx.id}
+                      className="flex items-center justify-between p-3 bg-[var(--bg)] rounded-xl"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          tx.type === 'TOPUP' ? 'bg-[var(--accent-lime)]/10' :
+                          tx.type === 'PURCHASE' ? 'bg-[var(--primary)]/10' :
+                          tx.type === 'REFUND' ? 'bg-[var(--accent-blue)]/10' :
+                          'bg-[var(--surface-light)]'
+                        }`}>
+                          {tx.type === 'TOPUP' ? (
+                            <ArrowDownLeft className="w-4 h-4 text-[var(--accent-lime)]" />
+                          ) : tx.type === 'PURCHASE' ? (
+                            <ArrowUpRight className="w-4 h-4 text-[var(--primary)]" />
+                          ) : tx.type === 'REFUND' ? (
+                            <ArrowDownLeft className="w-4 h-4 text-[var(--accent-blue)]" />
+                          ) : (
+                            <Wallet className="w-4 h-4 text-[var(--text-muted)]" />
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-medium text-white text-sm">
+                            {tx.type === 'TOPUP' ? 'Added Funds' :
+                             tx.type === 'PURCHASE' ? 'eSIM Purchase' :
+                             tx.type === 'REFUND' ? 'Refund' : 'Adjustment'}
+                          </div>
+                          <div className="text-xs text-[var(--text-muted)]">
+                            {new Date(tx.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={`font-bold text-sm ${
+                        tx.type === 'TOPUP' || tx.type === 'REFUND' ? 'text-[var(--accent-lime)]' : 'text-white'
+                      }`}>
+                        {tx.type === 'TOPUP' || tx.type === 'REFUND' ? '+' : '-'}${(tx.amount / 100).toFixed(2)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Country Stamps */}
             {visitedCountries.length > 0 && (
               <div className="card mb-6">
@@ -381,20 +578,47 @@ export default function DashboardPage() {
                             }`}>
                               {order.esim?.status || 'UNKNOWN'}
                             </span>
+                            {order.esim?.isGifted && (
+                              <span className="badge bg-pink-500/20 text-pink-400 text-xs">
+                                <Gift className="w-3 h-3 mr-1" />
+                                Gifted
+                              </span>
+                            )}
                           </div>
-                          <p className="text-sm text-[var(--text-muted)]">{order.planName}</p>
+                          <p className="text-sm text-[var(--text-muted)]">
+                            {order.planName}
+                            {order.esim?.isGifted && order.esim?.giftedToEmail && (
+                              <span className="ml-2 text-pink-400">
+                                → {order.esim.giftedToEmail}
+                              </span>
+                            )}
+                          </p>
                         </div>
-                        <div className="text-right">
-                          <div className="flex items-center gap-1 text-sm text-[var(--text-muted)]">
-                            <Clock className="w-4 h-4" />
-                            <span>
-                              {order.esim?.expiresAt
-                                ? new Date(order.esim.expiresAt).toLocaleDateString()
-                                : 'N/A'}
-                            </span>
+                        <div className="flex items-center gap-2">
+                          {order.esim?.status === 'INACTIVE' && !order.esim?.isGifted && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                if (order.esim) setGiftEsim(order.esim)
+                              }}
+                              className="btn-secondary text-sm py-1.5 px-3 flex items-center gap-1"
+                            >
+                              <Gift className="w-4 h-4" />
+                              Gift
+                            </button>
+                          )}
+                          <div className="text-right">
+                            <div className="flex items-center gap-1 text-sm text-[var(--text-muted)]">
+                              <Clock className="w-4 h-4" />
+                              <span>
+                                {order.esim?.expiresAt
+                                  ? new Date(order.esim.expiresAt).toLocaleDateString()
+                                  : 'N/A'}
+                              </span>
+                            </div>
                           </div>
+                          <QrCode className="w-5 h-5 text-[var(--text-muted)]" />
                         </div>
-                        <QrCode className="w-5 h-5 text-[var(--text-muted)]" />
                       </div>
                     </motion.div>
                   ))}
@@ -449,6 +673,150 @@ export default function DashboardPage() {
           </motion.div>
         </div>
       </div>
+
+      {/* Gift eSIM Modal */}
+      <AnimatePresence>
+        {giftEsim && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => !giftLoading && setGiftEsim(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-[var(--surface)] rounded-2xl p-6 max-w-md w-full border border-[var(--border)]"
+              onClick={e => e.stopPropagation()}
+            >
+              {giftSuccess ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 bg-[var(--accent-lime)]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-[var(--accent-lime)]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Gift Sent!</h3>
+                  <p className="text-[var(--text-muted)]">
+                    Your eSIM has been sent to {giftForm.email}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-pink-500/20 rounded-full flex items-center justify-center">
+                        <Gift className="w-5 h-5 text-pink-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-white">Gift this eSIM</h3>
+                        <p className="text-sm text-[var(--text-muted)]">
+                          {giftEsim.countryName} - {giftEsim.planName}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setGiftEsim(null)}
+                      className="p-2 hover:bg-[var(--bg)] rounded-lg transition-colors"
+                      disabled={giftLoading}
+                    >
+                      <X className="w-5 h-5 text-[var(--text-muted)]" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleGiftSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                        Recipient Email *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={giftForm.email}
+                        onChange={(e) => setGiftForm({ ...giftForm, email: e.target.value })}
+                        className="input"
+                        placeholder="friend@email.com"
+                        disabled={giftLoading}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                        Recipient Name
+                      </label>
+                      <input
+                        type="text"
+                        value={giftForm.name}
+                        onChange={(e) => setGiftForm({ ...giftForm, name: e.target.value })}
+                        className="input"
+                        placeholder="John"
+                        disabled={giftLoading}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+                        Personal Message
+                      </label>
+                      <textarea
+                        value={giftForm.message}
+                        onChange={(e) => setGiftForm({ ...giftForm, message: e.target.value })}
+                        className="input resize-none"
+                        rows={3}
+                        placeholder="Have a great trip! Stay connected."
+                        disabled={giftLoading}
+                      />
+                    </div>
+
+                    {giftError && (
+                      <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-2">
+                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                        <p className="text-sm text-red-400">{giftError}</p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setGiftEsim(null)}
+                        className="flex-1 btn-secondary"
+                        disabled={giftLoading}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 btn-primary flex items-center justify-center gap-2"
+                        disabled={giftLoading}
+                      >
+                        {giftLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Gift className="w-4 h-4" />
+                            <span>Send Gift</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Wallet Top-up Drawer */}
+      <WalletDrawer
+        isOpen={walletOpen}
+        onClose={() => setWalletOpen(false)}
+        currentBalance={walletBalance}
+      />
     </div>
   )
 }
