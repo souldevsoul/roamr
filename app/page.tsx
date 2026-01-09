@@ -88,8 +88,10 @@ const steps = [
 ]
 
 const stats = [
-  { value: '24/7', label: 'Support' },
   { value: '190+', label: 'Countries' },
+  { value: '<60s', label: 'Setup Time' },
+  { value: '5G', label: 'Network' },
+  { value: '24/7', label: 'Support' },
 ]
 
 // Animated counter component
@@ -351,7 +353,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="py-12 bg-[var(--surface)] border-y border-[var(--border)]">
+      <section className="mt-16 py-12 bg-[var(--surface)] border-y border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
