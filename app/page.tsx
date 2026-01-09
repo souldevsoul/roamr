@@ -88,8 +88,6 @@ const steps = [
 ]
 
 const stats = [
-  { value: '100K+', label: 'Happy Travelers' },
-  { value: '4.9', label: 'App Rating' },
   { value: '24/7', label: 'Support' },
   { value: '190+', label: 'Countries' },
 ]
@@ -249,28 +247,6 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Social Proof - Centered */}
-            <div className="flex flex-wrap items-center justify-center gap-8 mb-16">
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent-purple)] border-2 border-[var(--bg)] flex items-center justify-center text-xs font-bold text-white"
-                    >
-                      {String.fromCharCode(64 + i)}
-                    </div>
-                  ))}
-                </div>
-                <span className="text-sm text-[var(--text-muted)]">100K+ travelers</span>
-              </div>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 text-[var(--accent-lime)] fill-[var(--accent-lime)]" />
-                ))}
-                <span className="text-sm text-[var(--text-muted)] ml-1">4.9/5</span>
-              </div>
-            </div>
           </motion.div>
 
           {/* Destination Carousel - Below Text */}
