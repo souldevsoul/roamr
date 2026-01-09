@@ -250,7 +250,7 @@ function CheckoutContent() {
                             value={name}
                             onChange={e => setName(e.target.value)}
                             placeholder="John Doe"
-                            className="input pl-12"
+                            className="input input-icon"
                           />
                         </div>
                       </div>
@@ -266,7 +266,7 @@ function CheckoutContent() {
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             placeholder="your@email.com"
-                            className="input pl-12"
+                            className="input input-icon"
                             required
                           />
                         </div>
@@ -308,7 +308,7 @@ function CheckoutContent() {
                             value={cardNumber}
                             onChange={e => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))}
                             placeholder="4242 4242 4242 4242"
-                            className="input pl-12"
+                            className="input input-icon"
                             required
                           />
                         </div>

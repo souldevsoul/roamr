@@ -135,7 +135,7 @@ export default function HelpPage() {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search for help..."
-                className="input pl-12 w-full"
+                className="input input-icon w-full"
               />
             </div>
           </motion.div>

@@ -5,32 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn, useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
-import { Plane, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Globe } from 'lucide-react'
-
-// Flip clock character component
-function FlipChar({ char, delay = 0 }: { char: string; delay?: number }) {
-  return (
-    <motion.div
-      className="flip-number text-2xl md:text-3xl min-w-[1.5rem] text-center"
-      initial={{ rotateX: 90 }}
-      animate={{ rotateX: 0 }}
-      transition={{ delay, duration: 0.3, ease: 'easeOut' }}
-    >
-      {char}
-    </motion.div>
-  )
-}
-
-// Departure board style header
-function DepartureBoard({ text }: { text: string }) {
-  return (
-    <div className="flex items-center justify-center gap-1 mb-8">
-      {text.split('').map((char, i) => (
-        <FlipChar key={i} char={char} delay={i * 0.05} />
-      ))}
-    </div>
-  )
-}
+import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Globe, LogIn } from 'lucide-react'
 
 function LoginContent() {
   const router = useRouter()
@@ -86,46 +61,45 @@ function LoginContent() {
   return (
     <div className="min-h-screen bg-mesh flex items-center justify-center px-4 py-20">
       <div className="w-full max-w-md">
-        {/* Gate Header */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="inline-flex items-center gap-2 mb-4">
+          <div className="inline-flex items-center gap-2 mb-6">
             <div className="w-3 h-3 rounded-full bg-[var(--accent-lime)] animate-pulse" />
             <span className="text-xs uppercase tracking-widest text-[var(--text-muted)]">
-              Now Boarding
+              Welcome Back
             </span>
           </div>
-          <DepartureBoard text="GATE A1" />
-          <h1 className="text-2xl font-bold text-white mb-2">Member Login</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Sign In</h1>
           <p className="text-[var(--text-secondary)]">
-            Access your travel dashboard
+            Access your ROAMR dashboard
           </p>
         </motion.div>
 
-        {/* Login Card - styled as boarding terminal */}
+        {/* Login Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
           className="card bg-[var(--surface)] border-[var(--border)]"
         >
-          {/* Terminal Header */}
+          {/* Card Header */}
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-[var(--border)]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center">
-                <Globe className="w-5 h-5 text-white" />
+                <LogIn className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="text-xs text-[var(--text-muted)] uppercase tracking-wider">
-                  Destination
+                  Account
                 </div>
-                <div className="font-bold text-white">ROAMR Dashboard</div>
+                <div className="font-bold text-white">Sign In</div>
               </div>
             </div>
-            <Plane className="w-6 h-6 text-[var(--primary)]" />
+            <Globe className="w-6 h-6 text-[var(--primary)]" />
           </div>
 
           {error && (
@@ -143,7 +117,7 @@ function LoginContent() {
             {/* Email Field */}
             <div>
               <label className="block text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2">
-                Passenger Email
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
@@ -152,7 +126,7 @@ function LoginContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="input pl-12"
+                  className="input input-icon"
                   required
                 />
               </div>
@@ -161,7 +135,7 @@ function LoginContent() {
             {/* Password Field */}
             <div>
               <label className="block text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2">
-                Boarding Pass Code
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
@@ -170,7 +144,7 @@ function LoginContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="input pl-12 pr-12"
+                  className="input input-icon-both"
                   required
                 />
                 <button
@@ -194,11 +168,11 @@ function LoginContent() {
               {isLoading ? (
                 <>
                   <div className="spinner w-5 h-5" />
-                  <span>Boarding...</span>
+                  <span>Signing In...</span>
                 </>
               ) : (
                 <>
-                  <span>Board Flight</span>
+                  <span>Sign In</span>
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
@@ -227,7 +201,7 @@ function LoginContent() {
               className="btn-secondary w-full flex items-center justify-center gap-2"
             >
               <span>Create Account</span>
-              <Plane className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </motion.div>
